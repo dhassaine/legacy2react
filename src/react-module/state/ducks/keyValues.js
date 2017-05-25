@@ -4,14 +4,14 @@ const STORE_MOUNT_POINT = 'KVSTORE';
 
 const setValue = (key, data) => ({type: SET_VALUE, payload: {key, data}});
 const getValue = (state, key) => {
-    return state[STORE_MOUNT_POINT].get(key);
+    return state[STORE_MOUNT_POINT][key];
 };
 
 const initialState = {};
 const reducer = (state = initialState, action = {}) => {
     switch (action.type) {
         case SET_VALUE:
-            return state.set(action.payload.key, action.payload.data);
+            return Object.assign({}, state, {[action.payload.key]: action.payload.data});
         default:
             return state;
     }

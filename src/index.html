@@ -30,36 +30,48 @@
                         title: 'toggle1',
                         on: false
                   },
-                  toggle: function(){
-			      this.set('on', !this.get('on'));
-		      }
+                  toggle: function () {
+                        this.set('on', !this.get('on'));
+                  }
             });
-            var toggle1 = new Toggle();
-            console.log(JSON.stringify(toggle1));
 
             var AppView = Backbone.View.extend({
-                  events:{
-			      'click': 'toggle'
-		      },
+                  events: {
+                        'click': 'toggle'
+                  },
                   toggleTpl: _.template($('#toggle-template').html()),
                   el: '#container',
                   initialize: function () {
-                        this.model.on('change', this.render, this);
+                        var model = this.model;
+                        model.on('change', this.render, this);
                         this.render();
+
+                        model.on('change:on', function (model, value) {
+                              console.log('dispatching!');
+                              window.reactModule.store.dispatch(
+                                    window.reactModule.ducks.keyValues.actionCreators.setValue('toggle', value)
+                              );
+                        });
+
+                        window.reactModule.store.subscribe(function() {
+			            var state = window.reactModule.store.getState();
+					var value = window.reactModule.ducks.keyValues.selectors.getValue(state, 'toggle');
+					model.set('on', value);
+				});
                   },
                   render: function () {
                         this.$el.html(this.toggleTpl(this.model.attributes));
                   },
-                  toggle: function(){
+                  toggle: function () {
                         console.log('toggling!');
-			      this.model.toggle();
-		      }
+                        this.model.toggle();
+                  }
             });
 
             var toggle = new Toggle();
             var appView = new AppView({ model: toggle });
 
-            var reactToggleApp = window.reactModule.make({el: document.getElementById('react-module')});
+            var reactToggleApp = window.reactModule.make({ el: document.getElementById('react-module') });
             reactToggleApp.render();
       </script>
 </body>

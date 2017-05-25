@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import App from './app';
 import makeStore from './state/store';
+import ducks from './state/ducks';
 
 
 function bridge({ store, el, component }) {
@@ -28,5 +29,7 @@ const store = makeStore();
 window.reactModule = {
   make: ({ el, props = {} }) => {
     return bridge({ store, el, component: <App {...props} /> });
-  }
+  },
+  ducks,
+  store
 };
