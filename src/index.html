@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Hello World in Backbone.js</title>
+</head>
+
+<body>
+      <div id="container">Loading backbone...</div>
+      <div id="react-module">Loading react...</div>
+
+      <script type="text/template" id="toggle-template">
+            <div>
+                  <input id="toggle" type="checkbox" <%=on ? 'checked="checked"' : '' %>>
+                  <%= title %>
+            </div>
+      </script>
+
+      <script src="../build/bundle.js"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" type="text/javascript"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js" type="text/javascript"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.2/backbone-min.js" type="text/javascript"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone-localstorage.js/1.0/backbone.localStorage-min.js" type="text/javascript"></script>
+
+      <script type="text/javascript">
+            var Toggle = Backbone.Model.extend({
+                  defaults: {
+                        title: 'toggle1',
+                        on: false
+                  },
+                  toggle: function(){
+			      this.set('on', !this.get('on'));
+		      }
+            });
+            var toggle1 = new Toggle();
+            console.log(JSON.stringify(toggle1));
+
+            var AppView = Backbone.View.extend({
+                  events:{
+			      'click': 'toggle'
+		      },
+                  toggleTpl: _.template($('#toggle-template').html()),
+                  el: '#container',
+                  initialize: function () {
+                        this.model.on('change', this.render, this);
+                        this.render();
+                  },
+                  render: function () {
+                        this.$el.html(this.toggleTpl(this.model.attributes));
+                  },
+                  toggle: function(){
+                        console.log('toggling!');
+			      this.model.toggle();
+		      }
+            });
+
+            var toggle = new Toggle();
+            var appView = new AppView({ model: toggle });
+
+            var reactToggleApp = window.reactModule.make({el: document.getElementById('react-module')});
+            reactToggleApp.render();
+      </script>
+</body>
+
+</html>
