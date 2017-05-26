@@ -4,7 +4,7 @@
 <head>
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Hello World in Backbone.js</title>
+      <title>Integrating Backbone with React</title>
 </head>
 
 <body>
@@ -47,7 +47,6 @@
                         this.render();
 
                         model.on('change:on', function (model, value) {
-                              console.log('dispatching!');
                               window.reactModule.store.dispatch(
                                     window.reactModule.ducks.keyValues.actionCreators.setValue('toggle', value)
                               );
